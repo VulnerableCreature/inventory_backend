@@ -1,0 +1,177 @@
+$schema: 'https://raw.githubusercontent.com/context-hub/generator/refs/heads/main/json-schema.json'
+documents:
+  - description: CQRS
+    outputPath: CQRS/structure.md
+    overwrite: true
+    sources:
+      - type: file
+        description: Structure code `CQRS`
+        sourcePaths:
+          - app/CQRS
+          - app/Providers/CQRSServiceProvider.php
+        filePattern: '*.php'
+        showCharCount: false
+        showTreeView: true
+  - description: Controllers
+    content: |
+      # Controllers
+      Этот документ содержит информация о всех контроллерах
+    outputPath: docs/controllers.md
+    overwrite: true
+    sources:
+      - type: file
+        sourcePaths:
+          - app/Http/Controllers
+        filePattern: '*.php'
+        showCharCount: false
+        showTreeView: true
+  - description: authorization
+    outputPath: docs/auth.md
+    overwrite: true
+    sources:
+      - type: file
+        description: Authorization
+        sourcePaths:
+          - app/Http/Controllers/Authorization/AuthorizationController.php
+          - app/Http/Requests/Authorization/AuthorizationRequest.php
+          - app/Module/Authorization/DTO/AuthorizationUserDto.php
+          - app/Application/Authorization/Command/LoginCommand.php
+          - app/Module/Authorization/Handler/LoginHandler.php
+          - app/Application/Authorization/Command/LogoutCommand.php
+          - app/Module/Authorization/Handler/LogoutHandler.php
+          - app/Models/User.php
+          - routes/api.php
+        filePattern: '*.php'
+        showCharCount: false
+        showTreeView: true
+  - description: user
+    outputPath: docs/user.md
+    overwrite: true
+    sources:
+      - type: file
+        description: User
+        sourcePaths:
+          - database/migrations/0001_01_01_000000_create_users_table.php
+          - routes/groups/users.php
+          - app/Models/User.php
+          - app/Application/User/Query/GetUserByIdQuery.php
+          - app/Module/User/Query/GetUserByIdHandler.php
+          - app/Application/User/Query/GetAllUsersQuery.php
+          - app/Module/User/Query/GetAllUsersHandler.php
+          - app/Application/User/Command/CreateUserCommand.php
+          - app/Module/User/Command/CreateUserHandler.php
+          - app/Application/User/Command/DeleteUserCommand.php
+          - app/Module/User/Command/DeleteUserHandler.php
+          - app/Application/Wallet/Command/CreateWalletCommand.php
+          - app/Module/Wallet/Handler/CreateWalletHandler.php
+          - app/Http/Requests/User/CreateUserRequest.php
+          - app/Module/User/DTO/CreateUserDto.php
+          - app/Http/Controllers/Main/User/UserController.php
+          - app/Http/Resources/User/UserResource.php
+          - app/Http/Resources/User/UserCollection.php
+        filePattern: '*.php'
+        showCharCount: false
+        showTreeView: true
+  - description: profile
+    outputPath: docs/profile.md
+    overwrite: true
+    sources:
+      - type: file
+        description: Profile
+        sourcePaths:
+          - database/migrations/2025_12_31_161257_create_profiles_table.php
+          - routes/groups/profile.php
+          - app/Models/Profile.php
+          - app/Application/User/Query/GetUserByIdQuery.php
+          - app/Module/User/Query/GetUserByIdHandler.php
+          - app/Http/Requests/User/UpdateProfileRequest.php
+          - app/Http/Controllers/Main/User/ProfileController.php
+          - app/Http/Resources/User/ProfileResource.php
+          - app/Application/User/Command/UpdateProfileCommand.php
+          - app/Module/User/Command/UpdateProfileHandler.php
+        filePattern: '*.php'
+        showCharCount: false
+        showTreeView: true
+  - description: filter
+    outputPath: docs/filter.md
+    overwrite: true
+    sources:
+      - type: file
+        description: Filters
+        sourcePaths:
+          - app/Shared/Filter.php
+          - app/Module/User/UserFilter.php
+        filePattern: '*.php'
+        showCharCount: false
+        showTreeView: true
+  - description: wallet
+    outputPath: docs/wallet.md
+    overwrite: true
+    sources:
+      - type: file
+        description: Wallet
+        sourcePaths:
+          - database/migrations/2026_01_03_234431_create_wallets_table.php
+          - app/Models/User.php
+          - app/Models/Wallet.php
+          - app/Application/Wallet/Command/CreateWalletCommand.php
+          - app/Module/Wallet/Handler/CreateWalletHandler.php
+          - app/Module/Wallet/Enums/StatusEnum.php
+          - app/Module/Wallet/Enums/CurrencyEnum.php
+          - app/Http/Controllers/Main/User/UserController.php
+          - app/Http/Controllers/Main/User/UserWalletController.php
+          - app/Http/Resources/Wallet/WalletResource.php
+        filePattern: '*.php'
+        showCharCount: false
+        showTreeView: true
+  - description: filter
+    outputPath: docs/filter.md
+    overwrite: true
+    sources:
+      - type: file
+        description: Filters
+        sourcePaths:
+          - app/Shared/Filter.php
+          - app/Module/User/UserFilter.php
+        filePattern: '*.php'
+        showCharCount: false
+        showTreeView: true
+  - description: asset
+    outputPath: docs/asset.md
+    overwrite: true
+    sources:
+      - type: file
+        description: Asset
+        sourcePaths:
+          - database/migrations/2026_01_06_105241_create_assets_table.php
+          - routes/groups/assets.php
+          - app/Models/Asset.php
+          - app/Application/Asset/Query/GetAllAssetsQuery.php
+          - app/Module/Asset/Query/GetAllAssetsHandler.php
+          - app/Application/Asset/Query/GetAssetByIdQuery.php
+          - app/Module/Asset/Query/GetAssetByIdHandler.php
+          - app/Application/Asset/Command/CreateAssetCommand.php
+          - app/Module/Asset/Command/CreateAssetHandler.php
+          - app/Application/Asset/Command/UpdateAssetCommand.php
+          - app/Module/Asset/Command/UpdateAssetHandler.php
+          - app/Application/Asset/Command/DeleteAssetCommand.php
+          - app/Module/Asset/Command/DeleteAssetHandler.php
+          - app/Http/Requests/Asset/AssetFilterRequest.php
+          - app/Http/Requests/Asset/CreateAssetRequest.php
+          - app/Http/Requests/Asset/UpdateAssetRequest.php
+          - app/Module/Asset/DTO/CreateAssetDto.php
+          - app/Module/Asset/DTO/UpdateAssetDto.php
+          - app/Http/Controllers/Main/Asset/AssetController.php
+          - app/Http/Resources/Asset/AssetCollection.php
+          - app/Http/Resources/Asset/AssetResource.php
+          - app/Module/Asset/Enums/AssetTypeEnum.php
+          - app/Module/Asset/Enums/StatusEnum.php
+          - app/Module/Asset/Exceptions/InvalidQuantityException.php
+          - app/Module/Asset/Exceptions/FixedAssetQuantityExceededException.php
+          - app/Module/Asset/Exceptions/DuplicateInventoryNumberException.php
+          - app/Module/Asset/AssetFilter.php
+          - app/Shared/Exceptions/NegativeAmountException.php
+          - app/Shared/AppException.php
+        filePattern: '*.php'
+        showCharCount: false
+        showTreeView: true
