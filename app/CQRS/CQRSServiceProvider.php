@@ -14,6 +14,11 @@ use App\Application\Employee\Command\DeleteEmployeeCommand;
 use App\Application\Employee\Command\UpdateEmployeeCommand;
 use App\Application\Employee\Query\GetAllEmployeesQuery;
 use App\Application\Employee\Query\GetEmployeeByIdQuery;
+use App\Application\Room\Command\CreateRoomCommand;
+use App\Application\Room\Command\DeleteRoomCommand;
+use App\Application\Room\Command\UpdateRoomCommand;
+use App\Application\Room\Query\GetAllRoomQuery;
+use App\Application\Room\Query\GetRoomByIdQuery;
 use App\Application\Transaction\Command\CreateTransactionCommand;
 use App\Application\Transaction\Command\UpdateTransactionStatusCommand;
 use App\Application\User\Command\CreateUserCommand;
@@ -37,6 +42,11 @@ use App\Module\Employee\Command\DeleteEmployeeHandler;
 use App\Module\Employee\Command\UpdateEmployeeHandler;
 use App\Module\Employee\Query\GetAllEmployeesHandler;
 use App\Module\Employee\Query\GetEmployeeByIdHandler;
+use App\Module\Room\Command\CreateRoomHandler;
+use App\Module\Room\Command\DeleteRoomHandler;
+use App\Module\Room\Command\UpdateRoomHandler;
+use App\Module\Room\Query\GetAllRoomHandler;
+use App\Module\Room\Query\GetRoomByIdHandler;
 use App\Module\Transaction\Command\CreateTransactionHandler;
 use App\Module\Transaction\Command\UpdateTransactionStatusHandler;
 use App\Module\User\Command\CreateUserHandler;
@@ -92,6 +102,9 @@ class CQRSServiceProvider extends ServiceProvider
             CreateEmployeeCommand::class => CreateEmployeeHandler::class,
             UpdateEmployeeCommand::class => UpdateEmployeeHandler::class,
             DeleteEmployeeCommand::class => DeleteEmployeeHandler::class,
+            CreateRoomCommand::class => CreateRoomHandler::class,
+            UpdateRoomCommand::class => UpdateRoomHandler::class,
+            DeleteRoomCommand::class => DeleteRoomHandler::class,
         ]);
     }
 
@@ -106,6 +119,8 @@ class CQRSServiceProvider extends ServiceProvider
             GetWalletByIdQuery::class => GetWalletByIdHandler::class,
             GetAllEmployeesQuery::class => GetAllEmployeesHandler::class,
             GetEmployeeByIdQuery::class => GetEmployeeByIdHandler::class,
+            GetAllRoomQuery::class => GetAllRoomHandler::class,
+            GetRoomByIdQuery::class => GetRoomByIdHandler::class,
         ]);
     }
 }

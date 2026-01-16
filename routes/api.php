@@ -14,5 +14,6 @@ Route::prefix('v1')->group(function() {
         require __DIR__ . '/groups/assets.php';
         require __DIR__ . '/groups/wallets.php';
         require __DIR__ . '/groups/employees.php';
+        require __DIR__ . '/groups/rooms.php';
     });
 });
