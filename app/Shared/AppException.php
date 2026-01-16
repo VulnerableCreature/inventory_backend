@@ -16,6 +16,8 @@ abstract class AppException extends Exception
             'code' => $this->getCode(),
             'line' => $this->getLine(),
             'file' => $this->getFile(),
+            'exception' => get_class($this),
+            'parent' => get_parent_class($this),
         ], $this->getCode());
     }
 }
