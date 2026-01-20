@@ -5,4 +5,5 @@ return [
     App\Providers\AppServiceProvider::class,
     App\Providers\GateServiceProvider::class,
     App\Providers\RateLimiterServiceProvider::class,
+    App\Providers\RelationEnforceMorphMapServiceProvider::class,
 ];

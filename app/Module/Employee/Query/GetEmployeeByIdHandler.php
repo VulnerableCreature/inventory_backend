@@ -11,6 +11,6 @@ final readonly class GetEmployeeByIdHandler
 {
     public function handle(GetEmployeeByIdQuery $employeeByIdQuery): Employee
     {
-        return Employee::query()->findOrFail($employeeByIdQuery->id);
+        return Employee::query()->with('rooms')->findOrFail($employeeByIdQuery->id);
     }
 }

@@ -2,6 +2,7 @@
 
 namespace App\Http\Resources\Employee;
 
+use App\Http\Resources\Room\RoomCollection;
 use App\Models\Employee;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
@@ -17,6 +18,7 @@ final class EmployeeResource extends JsonResource
             'surname' => $this->resource->surname,
             'name' => $this->resource->name,
             'middleName' => $this->resource->middleName,
+            'rooms' => new RoomCollection($this->whenLoaded('rooms')),
         ];
     }
 }

@@ -8,22 +8,27 @@ use Database\Factories\UserFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Database\Eloquent\Relations\MorphToMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Str;
 use Laravel\Sanctum\HasApiTokens;
 
 /**
- * @property int                          $id
- * @property string                       $login
- * @property string                       $password
- * @property string                       $remember_token
- * @property Carbon                       $created_at
- * @property Carbon                       $updated_at
+ * @property int                               $id
+ * @property string                            $login
+ * @property string                            $password
+ * @property string                            $remember_token
+ * @property Carbon                            $created_at
+ * @property Carbon                            $updated_at
  *
- * @property Profile|HasOne               $profile
- * @property Wallet|HasOne                $wallet
- * @property Collection<int, Asset>|Asset $assets
+ * @property string                            $shortName
+ *
+ * @property Profile|HasOne                    $profile
+ * @property Wallet|HasOne                     $wallet
+ * @property Collection<int, Asset>|HasMany    $assets
+ * @property Collection<int, Room>|MorphToMany $rooms
  */
 final class User extends Authenticatable
 {
@@ -63,5 +68,22 @@ final class User extends Authenticatable
     public function assets(): HasMany
     {
         return $this->hasMany(Asset::class, 'user_id', 'id');
+    }
+
+    public function rooms(): MorphToMany
+    {
+        return $this->morphToMany(Room::class, 'occupant', 'room_occupants');
+    }
+
+    public function getShortNameAttribute(): string
+    {
+        if ($this->profile()->exists()) {
+            $this->load('profile');
+            $name = Str::take(Str::ucfirst($this->profile->name), 1);
+            $middleName = Str::take(Str::ucfirst($this->profile->middleName), 1);
+            return "{$this->profile->surname} $name $middleName";
+        }
+
+        return $this->login;
     }
 }

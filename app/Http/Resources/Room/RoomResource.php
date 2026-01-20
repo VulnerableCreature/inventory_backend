@@ -22,6 +22,10 @@ final class RoomResource extends JsonResource
             ],
             'building' => $this->resource->building,
             'floor' => $this->resource->floor,
+            'occupants' => $this->when(
+                $this->resource->relationLoaded('users') || $this->resource->relationLoaded('employees'),
+                fn() => OccupantResource::collection($this->resource->occupants)
+            ),
         ];
     }
 }

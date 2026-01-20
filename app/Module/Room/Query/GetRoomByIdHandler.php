@@ -11,6 +11,8 @@ final readonly class GetRoomByIdHandler
 {
     public function handle(GetRoomByIdQuery $roomByIdQuery): Room
     {
-        return Room::query()->findOrFail($roomByIdQuery->id);
+        return Room::query()
+            ->with(['users', 'employees'])
+            ->findOrFail($roomByIdQuery->id);
     }
 }

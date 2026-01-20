@@ -15,6 +15,6 @@ final readonly class GetUserByIdHandler
 
     public function handle(GetUserByIdQuery $query): User
     {
-        return User::query()->with(['profile', 'wallet'])->findOrFail($query->id);
+        return User::query()->with(['profile', 'wallet', 'rooms'])->findOrFail($query->id);
     }
 }

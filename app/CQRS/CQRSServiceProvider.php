@@ -19,6 +19,8 @@ use App\Application\Room\Command\DeleteRoomCommand;
 use App\Application\Room\Command\UpdateRoomCommand;
 use App\Application\Room\Query\GetAllRoomQuery;
 use App\Application\Room\Query\GetRoomByIdQuery;
+use App\Application\RoomOccupant\Command\AssignOccupantsToRoomCommand;
+use App\Application\RoomOccupant\Command\RemoveOccupantsFromRoomCommand;
 use App\Application\Transaction\Command\CreateTransactionCommand;
 use App\Application\Transaction\Command\UpdateTransactionStatusCommand;
 use App\Application\User\Command\CreateUserCommand;
@@ -47,6 +49,8 @@ use App\Module\Room\Command\DeleteRoomHandler;
 use App\Module\Room\Command\UpdateRoomHandler;
 use App\Module\Room\Query\GetAllRoomHandler;
 use App\Module\Room\Query\GetRoomByIdHandler;
+use App\Module\RoomOccupant\Command\AssignOccupantsToRoomHandler;
+use App\Module\RoomOccupant\Command\RemoveOccupantsFromRoomHandler;
 use App\Module\Transaction\Command\CreateTransactionHandler;
 use App\Module\Transaction\Command\UpdateTransactionStatusHandler;
 use App\Module\User\Command\CreateUserHandler;
@@ -105,6 +109,8 @@ class CQRSServiceProvider extends ServiceProvider
             CreateRoomCommand::class => CreateRoomHandler::class,
             UpdateRoomCommand::class => UpdateRoomHandler::class,
             DeleteRoomCommand::class => DeleteRoomHandler::class,
+            AssignOccupantsToRoomCommand::class => AssignOccupantsToRoomHandler::class,
+            RemoveOccupantsFromRoomCommand::class => RemoveOccupantsFromRoomHandler::class,
         ]);
     }
 
