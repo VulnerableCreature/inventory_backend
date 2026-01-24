@@ -12,6 +12,16 @@ documents:
         filePattern: '*.php'
         showCharCount: false
         showTreeView: true
+  - description: "Project Architecture Overview"
+    outputPath: "docs/app.md"
+    sources:
+      - type: file
+        description: Project Architecture Overview
+        sourcePaths:
+          - app
+        filePattern: '*.php'
+        showCharCount: false
+        showTreeView: true
   - description: Controllers
     content: |
       # Controllers
@@ -133,6 +143,17 @@ documents:
         sourcePaths:
           - app/Shared/Filter.php
           - app/Module/User/UserFilter.php
+        filePattern: '*.php'
+        showCharCount: false
+        showTreeView: true
+  - description: routes
+    outputPath: docs/routes.md
+    overwrite: true
+    sources:
+      - type: file
+        description: Routes
+        sourcePaths:
+          - routes
         filePattern: '*.php'
         showCharCount: false
         showTreeView: true

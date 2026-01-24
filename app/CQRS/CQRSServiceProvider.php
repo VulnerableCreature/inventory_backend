@@ -5,6 +5,8 @@ namespace App\CQRS;
 use App\Application\Asset\Command\CreateAssetCommand;
 use App\Application\Asset\Command\DeleteAssetCommand;
 use App\Application\Asset\Command\UpdateAssetCommand;
+use App\Application\Asset\Command\UpdateAssetQuantityCommand;
+use App\Application\Asset\Command\UpdateAssetStatusCommand;
 use App\Application\Asset\Query\GetAllAssetsQuery;
 use App\Application\Asset\Query\GetAssetByIdQuery;
 use App\Application\Authorization\Command\LoginCommand;
@@ -14,6 +16,8 @@ use App\Application\Employee\Command\DeleteEmployeeCommand;
 use App\Application\Employee\Command\UpdateEmployeeCommand;
 use App\Application\Employee\Query\GetAllEmployeesQuery;
 use App\Application\Employee\Query\GetEmployeeByIdQuery;
+use App\Application\Issuance\Command\CreateIssuanceCommand;
+use App\Application\Issuance\Command\CreateIssuanceCommentCommand;
 use App\Application\Room\Command\CreateRoomCommand;
 use App\Application\Room\Command\DeleteRoomCommand;
 use App\Application\Room\Command\UpdateRoomCommand;
@@ -35,6 +39,8 @@ use App\Application\Wallet\Query\GetWalletByIdQuery;
 use App\Module\Asset\Command\CreateAssetHandler;
 use App\Module\Asset\Command\DeleteAssetHandler;
 use App\Module\Asset\Command\UpdateAssetHandler;
+use App\Module\Asset\Command\UpdateAssetQuantityHandler;
+use App\Module\Asset\Command\UpdateAssetStatusHandler;
 use App\Module\Asset\Query\GetAllAssetsHandler;
 use App\Module\Asset\Query\GetAssetByIdHandler;
 use App\Module\Authorization\Handler\LoginHandler;
@@ -44,6 +50,8 @@ use App\Module\Employee\Command\DeleteEmployeeHandler;
 use App\Module\Employee\Command\UpdateEmployeeHandler;
 use App\Module\Employee\Query\GetAllEmployeesHandler;
 use App\Module\Employee\Query\GetEmployeeByIdHandler;
+use App\Module\Issuance\Command\CreateIssuanceCommentHandler;
+use App\Module\Issuance\Command\CreateIssuanceHandler;
 use App\Module\Room\Command\CreateRoomHandler;
 use App\Module\Room\Command\DeleteRoomHandler;
 use App\Module\Room\Command\UpdateRoomHandler;
@@ -101,6 +109,8 @@ class CQRSServiceProvider extends ServiceProvider
             CreateAssetCommand::class => CreateAssetHandler::class,
             UpdateAssetCommand::class => UpdateAssetHandler::class,
             DeleteAssetCommand::class => DeleteAssetHandler::class,
+            UpdateAssetQuantityCommand::class => UpdateAssetQuantityHandler::class,
+            UpdateAssetStatusCommand::class => UpdateAssetStatusHandler::class,
             CreateTransactionCommand::class => CreateTransactionHandler::class,
             UpdateTransactionStatusCommand::class => UpdateTransactionStatusHandler::class,
             CreateEmployeeCommand::class => CreateEmployeeHandler::class,
@@ -111,6 +121,8 @@ class CQRSServiceProvider extends ServiceProvider
             DeleteRoomCommand::class => DeleteRoomHandler::class,
             AssignOccupantsToRoomCommand::class => AssignOccupantsToRoomHandler::class,
             RemoveOccupantsFromRoomCommand::class => RemoveOccupantsFromRoomHandler::class,
+            CreateIssuanceCommand::class => CreateIssuanceHandler::class,
+            CreateIssuanceCommentCommand::class => CreateIssuanceCommentHandler::class,
         ]);
     }
 

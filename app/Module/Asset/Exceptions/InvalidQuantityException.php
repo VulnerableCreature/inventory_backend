@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace App\Module\Asset\Exceptions;
 
 use App\Shared\AppException;
-use Override;
 
 final class InvalidQuantityException extends AppException
 {

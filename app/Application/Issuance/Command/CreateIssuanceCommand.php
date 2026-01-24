@@ -1,0 +1,26 @@
+<?php
+
+declare(strict_types=1);
+
+namespace App\Application\Issuance\Command;
+
+use App\CQRS\CommandInterface;
+use App\Models\Asset;
+use App\Models\Room;
+use DateTimeImmutable;
+use Illuminate\Database\Eloquent\Model;
+
+final readonly class CreateIssuanceCommand implements CommandInterface
+{
+    public function __construct(
+        public Asset             $asset,
+        public Room              $room,
+        public ?Asset            $device,
+        public Model             $issuable,
+        public int               $quantity,
+        public DateTimeImmutable $issued_at,
+        public string            $comment,
+    )
+    {
+    }
+}

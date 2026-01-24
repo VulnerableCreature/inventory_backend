@@ -34,7 +34,7 @@ final class Employee extends Model
     {
         $name = Str::take(Str::ucfirst($this->name), 1);
         $middleName = Str::take(Str::ucfirst($this->middleName), 1);
-        return "$this->surname $name $middleName";
+        return "$this->surname $name.$middleName";
     }
 
     public function rooms(): MorphToMany

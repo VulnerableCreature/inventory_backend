@@ -6,7 +6,7 @@ use Illuminate\Support\Facades\Route;
 Route::prefix('v1')->group(function() {
     Route::post('/login', [AuthorizationController::class, 'store'])->middleware(['guest', 'throttle:login']);
 
-    Route::group(['namespace' => 'Authorization', 'middleware' => ['auth:sanctum', 'throttle:api']], function() {
+    Route::group(['middleware' => ['auth:sanctum', 'throttle:api']], function() {
         Route::delete('/logout', [AuthorizationController::class, 'destroy']);
 
         require __DIR__ . '/groups/profile.php';
@@ -15,5 +15,6 @@ Route::prefix('v1')->group(function() {
         require __DIR__ . '/groups/wallets.php';
         require __DIR__ . '/groups/employees.php';
         require __DIR__ . '/groups/rooms.php';
+        require __DIR__ . '/groups/issuance.php';
     });
 });

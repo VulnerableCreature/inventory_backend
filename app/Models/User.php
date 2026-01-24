@@ -81,7 +81,7 @@ final class User extends Authenticatable
             $this->load('profile');
             $name = Str::take(Str::ucfirst($this->profile->name), 1);
             $middleName = Str::take(Str::ucfirst($this->profile->middleName), 1);
-            return "{$this->profile->surname} $name $middleName";
+            return "{$this->profile->surname} $name.$middleName";
         }
 
         return $this->login;
