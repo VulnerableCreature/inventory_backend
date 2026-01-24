@@ -2,16 +2,10 @@
 
 namespace App\Http\Controllers\Main\Asset;
 
-use App\Application\Asset\Command\CreateAssetCommand;
-use App\Application\Asset\Command\DeleteAssetCommand;
 use App\Application\Asset\Query\GetAllAssetsQuery;
 use App\Application\Asset\Query\GetAssetByIdQuery;
-use App\Application\Transaction\Command\CreateTransactionCommand;
-use App\Application\Transaction\Command\UpdateTransactionStatusCommand;
-use App\Application\Wallet\Command\UpdateWalletBalanceCommand;
 use App\CQRS\CommandBusInterface;
 use App\CQRS\QueryBusInterface;
-use App\CQRS\TransactionResultCollector;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Asset\AssetFilterRequest;
 use App\Http\Requests\Asset\CreateAssetRequest;
@@ -19,10 +13,9 @@ use App\Http\Requests\Asset\UpdateAssetRequest;
 use App\Http\Resources\Asset\AssetCollection;
 use App\Http\Resources\Asset\AssetResource;
 use App\Models\Asset;
-use App\Models\Transaction;
-use App\Module\Asset\Services\UpdateAssetWithWalletService;
-use App\Module\Transaction\Enums\TransactionStatusEnum;
-use App\Module\Transaction\Enums\TransactionTypeEnum;
+use App\Module\Asset\Orchestrators\CreateAssetOrchestrator;
+use App\Module\Asset\Orchestrators\DestroyAssetOrchestrator;
+use App\Module\Asset\Orchestrators\UpdateAssetOrchestrator;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Gate;
 use Throwable;
@@ -30,9 +23,11 @@ use Throwable;
 final class AssetController extends Controller
 {
     public function __construct(
-        CommandBusInterface                           $commandBus,
-        QueryBusInterface                             $queryBus,
-        private readonly UpdateAssetWithWalletService $updateAssetWithWalletService,
+        CommandBusInterface                       $commandBus,
+        QueryBusInterface                         $queryBus,
+        private readonly CreateAssetOrchestrator  $createAssetOrchestrator,
+        private readonly UpdateAssetOrchestrator  $updateAssetOrchestrator,
+        private readonly DestroyAssetOrchestrator $destroyAssetOrchestrator,
     )
     {
         parent::__construct($commandBus, $queryBus);
@@ -57,48 +52,7 @@ final class AssetController extends Controller
     {
         $dto = $request->toDto();
 
-        $commands = [
-            new CreateAssetCommand(
-                $dto->originalName,
-                $dto->name,
-                $dto->inventoryNumber,
-                $dto->price,
-                $dto->quantity,
-                $dto->dateRegistration
-            ),
-            function(TransactionResultCollector $collector) {
-                /** @var Asset $asset */
-                $asset = $collector->first();
-                return new CreateTransactionCommand(
-                    $asset->user->wallet?->id,
-                    $asset->price,
-                    TransactionTypeEnum::CREDIT,
-                );
-            },
-            function(TransactionResultCollector $collector) {
-                /** @var Asset $asset */
-                $asset = $collector->first();
-                return new UpdateWalletBalanceCommand(
-                    $asset->user->wallet->id,
-                    $asset->price,
-                    TransactionTypeEnum::CREDIT
-                );
-            }
-        ];
-
-        $this->commandBus->dispatchInTransactionWithAfterCommitCallback(
-            $commands,
-            function(TransactionResultCollector $collector) {
-                /** @var Transaction $transaction */
-                $transaction = $collector->get(1);
-                $this->commandBus->dispatch(
-                    new UpdateTransactionStatusCommand(
-                        $transaction->id,
-                        TransactionStatusEnum::COMPLETED
-                    )
-                );
-            }
-        );
+        $this->createAssetOrchestrator->execute($dto);
 
         return response()->json([
             'message' => 'Asset created successfully'
@@ -117,7 +71,7 @@ final class AssetController extends Controller
 
         Gate::authorize('update-asset', $asset);
 
-        $this->updateAssetWithWalletService->execute($asset, $dto);
+        $asset = $this->updateAssetOrchestrator->execute($asset, $dto);
 
         return response()->json(new AssetResource($asset));
     }
@@ -132,35 +86,7 @@ final class AssetController extends Controller
 
         Gate::authorize('delete-asset', $asset);
 
-        $wallet = $asset->user->wallet;
-
-        $commands = [
-            new DeleteAssetCommand($asset->id),
-            new CreateTransactionCommand(
-                $wallet->id,
-                $asset->price,
-                TransactionTypeEnum::DEBIT,
-            ),
-            new UpdateWalletBalanceCommand(
-                $wallet->id,
-                $asset->price,
-                TransactionTypeEnum::DEBIT
-            ),
-        ];
-
-        $this->commandBus->dispatchInTransactionWithAfterCommitCallback(
-            $commands,
-            function(TransactionResultCollector $collector) {
-                $transaction = $collector->get(1);
-                $this->commandBus->dispatch(
-                    new UpdateTransactionStatusCommand(
-                        $transaction->id,
-                        TransactionStatusEnum::COMPLETED
-                    )
-                );
-            }
-        );
-
+        $this->destroyAssetOrchestrator->execute($asset);
         return response()->json([
             'message' => 'The record was successfully deleted'
         ]);

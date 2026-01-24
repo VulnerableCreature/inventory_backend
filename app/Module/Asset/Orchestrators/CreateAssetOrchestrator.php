@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace App\Module\Asset\Services;
+namespace App\Module\Asset\Orchestrators;
 
-use App\Application\Asset\Command\UpdateAssetCommand;
+use App\Application\Asset\Command\CreateAssetCommand;
 use App\Application\Transaction\Command\CreateTransactionCommand;
 use App\Application\Transaction\Command\UpdateTransactionStatusCommand;
 use App\Application\Wallet\Command\UpdateWalletBalanceCommand;
@@ -12,16 +12,14 @@ use App\CQRS\CommandBus;
 use App\CQRS\CommandBusInterface;
 use App\CQRS\TransactionResultCollector;
 use App\Models\Asset;
-use App\Module\Asset\DTO\UpdateAssetDto;
+use App\Models\Transaction;
+use App\Module\Asset\DTO\CreateAssetDto;
 use App\Module\Transaction\Enums\TransactionStatusEnum;
 use App\Module\Transaction\Enums\TransactionTypeEnum;
-use App\Shared\Exceptions\CurrencyMismatchException;
-use App\Shared\Exceptions\NegativeAmountException;
-use App\Shared\ValueObjects\Money;
 use Illuminate\Container\Attributes\Give;
 use Throwable;
 
-final readonly class UpdateAssetWithWalletService
+final readonly class CreateAssetOrchestrator
 {
     public function __construct(
         #[Give(CommandBus::class)] private CommandBusInterface $commandBus,
@@ -31,49 +29,42 @@ final readonly class UpdateAssetWithWalletService
 
     /**
      * @throws Throwable
-     * @throws NegativeAmountException
-     * @throws CurrencyMismatchException
      */
-    public function execute(Asset $asset, UpdateAssetDto $dto): void
+    public function execute(CreateAssetDto $dto): void
     {
-        $wallet = $asset->user->wallet;
-
-        $oldPrice = $asset->price;
-        $newPrice = Money::of($dto->price);
-
-        $absoluteDifference = $newPrice->absoluteDifference($oldPrice);
-
-        $isDebit = $newPrice->isLessThan($oldPrice);
-
-        $transactionType = $isDebit
-            ? TransactionTypeEnum::DEBIT
-            : TransactionTypeEnum::CREDIT;
-
         $commands = [
-            new UpdateAssetCommand(
-                $asset->id,
+            new CreateAssetCommand(
                 $dto->originalName,
                 $dto->name,
                 $dto->inventoryNumber,
-                $newPrice->getAmountInDecimal(),
+                $dto->price,
                 $dto->quantity,
                 $dto->dateRegistration
             ),
-            new CreateTransactionCommand(
-                $wallet->id,
-                $absoluteDifference,
-                $transactionType,
-            ),
-            new UpdateWalletBalanceCommand(
-                $wallet->id,
-                $absoluteDifference,
-                $transactionType
-            )
+            function(TransactionResultCollector $collector) {
+                /** @var Asset $asset */
+                $asset = $collector->first();
+                return new CreateTransactionCommand(
+                    $asset->user->wallet?->id,
+                    $asset->price,
+                    TransactionTypeEnum::CREDIT,
+                );
+            },
+            function(TransactionResultCollector $collector) {
+                /** @var Asset $asset */
+                $asset = $collector->first();
+                return new UpdateWalletBalanceCommand(
+                    $asset->user->wallet->id,
+                    $asset->price,
+                    TransactionTypeEnum::CREDIT
+                );
+            }
         ];
 
         $this->commandBus->dispatchInTransactionWithAfterCommitCallback(
             $commands,
             function(TransactionResultCollector $collector) {
+                /** @var Transaction $transaction */
                 $transaction = $collector->get(1);
                 $this->commandBus->dispatch(
                     new UpdateTransactionStatusCommand(
@@ -81,7 +72,7 @@ final readonly class UpdateAssetWithWalletService
                         TransactionStatusEnum::COMPLETED
                     )
                 );
-            },
+            }
         );
     }
 }
