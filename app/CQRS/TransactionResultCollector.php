@@ -29,4 +29,13 @@ final class TransactionResultCollector
     {
         return $this->get(0);
     }
+
+    public function last(): mixed
+    {
+        if (empty($this->results)) {
+            return null;
+        }
+
+        return $this->results[array_key_last($this->results)];
+    }
 }

@@ -3,12 +3,12 @@
 namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
+use App\Module\Room\Traits\MorphToManyRoomsTrait;
 use Carbon\Carbon;
 use Database\Factories\UserFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
-use Illuminate\Database\Eloquent\Relations\MorphToMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Collection;
@@ -16,25 +16,25 @@ use Illuminate\Support\Str;
 use Laravel\Sanctum\HasApiTokens;
 
 /**
- * @property int                               $id
- * @property string                            $login
- * @property string                            $password
- * @property string                            $remember_token
- * @property Carbon                            $created_at
- * @property Carbon                            $updated_at
+ * @property int                            $id
+ * @property string                         $login
+ * @property string                         $password
+ * @property string                         $remember_token
+ * @property Carbon                         $created_at
+ * @property Carbon                         $updated_at
  *
- * @property string                            $shortName
+ * @property string                         $shortName
  *
- * @property Profile|HasOne                    $profile
- * @property Wallet|HasOne                     $wallet
- * @property Collection<int, Asset>|HasMany    $assets
- * @property Collection<int, Room>|MorphToMany $rooms
+ * @property Profile|HasOne                 $profile
+ * @property Wallet|HasOne                  $wallet
+ * @property Collection<int, Asset>|HasMany $assets
  */
 final class User extends Authenticatable
 {
     /** @use HasFactory<UserFactory> */
     use HasFactory, Notifiable;
     use HasApiTokens;
+    use MorphToManyRoomsTrait;
 
     protected $table = 'users';
 
@@ -70,15 +70,9 @@ final class User extends Authenticatable
         return $this->hasMany(Asset::class, 'user_id', 'id');
     }
 
-    public function rooms(): MorphToMany
-    {
-        return $this->morphToMany(Room::class, 'occupant', 'room_occupants');
-    }
-
     public function getShortNameAttribute(): string
     {
-        if ($this->profile()->exists()) {
-            $this->load('profile');
+        if ($this->profile) {
             $name = Str::take(Str::ucfirst($this->profile->name), 1);
             $middleName = Str::take(Str::ucfirst($this->profile->middleName), 1);
             return "{$this->profile->surname} $name.$middleName";

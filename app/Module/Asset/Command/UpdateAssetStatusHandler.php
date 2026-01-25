@@ -20,6 +20,12 @@ final readonly class UpdateAssetStatusHandler
             ]);
         }
 
+        if ($asset->quantity > 0 && $asset->status === StatusEnum::ENDED) {
+            $asset->update([
+                'status' => StatusEnum::IN_STOCK
+            ]);
+        }
+
         return $asset;
     }
 }

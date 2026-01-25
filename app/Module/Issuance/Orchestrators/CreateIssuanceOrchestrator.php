@@ -7,11 +7,9 @@ namespace App\Module\Issuance\Orchestrators;
 use App\Application\Asset\Command\UpdateAssetQuantityCommand;
 use App\Application\Asset\Command\UpdateAssetStatusCommand;
 use App\Application\Asset\Query\GetAssetByIdQuery;
-use App\Application\Employee\Query\GetEmployeeByIdQuery;
 use App\Application\Issuance\Command\CreateIssuanceCommand;
 use App\Application\Issuance\Command\CreateIssuanceCommentCommand;
 use App\Application\Room\Query\GetRoomByIdQuery;
-use App\Application\User\Query\GetUserByIdQuery;
 use App\CQRS\CommandBus;
 use App\CQRS\CommandBusInterface;
 use App\CQRS\QueryBus;
@@ -22,14 +20,14 @@ use App\Models\Room;
 use App\Module\Asset\Enums\OperationEnum;
 use App\Module\Asset\Exceptions\InsufficientAssetStockException;
 use App\Module\Issuance\DTO\CreateIssuanceDto;
+use App\Module\Issuance\Traits\ResolvableIssuableTrait;
 use Illuminate\Container\Attributes\Give;
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\Relation;
-use InvalidArgumentException;
 use Throwable;
 
 final readonly class CreateIssuanceOrchestrator
 {
+    use ResolvableIssuableTrait;
+
     public function __construct(
         #[Give(CommandBus::class)] private CommandBusInterface $commandBus,
         #[Give(QueryBus::class)] private QueryBusInterface     $queryBus,
@@ -88,20 +86,5 @@ final readonly class CreateIssuanceOrchestrator
                 );
             },
         );
-    }
-
-    private function resolveIssuable(string $type, int $id): Model
-    {
-        $morphMap = Relation::morphMap();
-
-        if (!isset($morphMap[$type])) {
-            throw new InvalidArgumentException("Invalid issuable type: $type");
-        }
-
-        return match ($type) {
-            'user' => $this->queryBus->ask(new GetUserByIdQuery($id)),
-            'employee' => $this->queryBus->ask(new GetEmployeeByIdQuery($id)),
-            default => throw new InvalidArgumentException("Unsupported issuable type: $type"),
-        };
     }
 }

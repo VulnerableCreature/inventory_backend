@@ -18,6 +18,15 @@ use App\Application\Employee\Query\GetAllEmployeesQuery;
 use App\Application\Employee\Query\GetEmployeeByIdQuery;
 use App\Application\Issuance\Command\CreateIssuanceCommand;
 use App\Application\Issuance\Command\CreateIssuanceCommentCommand;
+use App\Application\Issuance\Command\UpdateIssuanceAssetCommand;
+use App\Application\Issuance\Command\UpdateIssuanceCommentCommand;
+use App\Application\Issuance\Command\UpdateIssuanceDeviceCommand;
+use App\Application\Issuance\Command\UpdateIssuanceIssuableCommand;
+use App\Application\Issuance\Command\UpdateIssuanceIssuedAtCommand;
+use App\Application\Issuance\Command\UpdateIssuanceQuantityCommand;
+use App\Application\Issuance\Command\UpdateIssuanceRoomCommand;
+use App\Application\Issuance\Query\GetAllIssuancesQuery;
+use App\Application\Issuance\Query\GetIssuanceByIdQuery;
 use App\Application\Room\Command\CreateRoomCommand;
 use App\Application\Room\Command\DeleteRoomCommand;
 use App\Application\Room\Command\UpdateRoomCommand;
@@ -52,6 +61,15 @@ use App\Module\Employee\Query\GetAllEmployeesHandler;
 use App\Module\Employee\Query\GetEmployeeByIdHandler;
 use App\Module\Issuance\Command\CreateIssuanceCommentHandler;
 use App\Module\Issuance\Command\CreateIssuanceHandler;
+use App\Module\Issuance\Command\UpdateIssuanceAssetHandler;
+use App\Module\Issuance\Command\UpdateIssuanceCommentHandler;
+use App\Module\Issuance\Command\UpdateIssuanceDeviceHandler;
+use App\Module\Issuance\Command\UpdateIssuanceIssuableHandler;
+use App\Module\Issuance\Command\UpdateIssuanceIssuedAtHandler;
+use App\Module\Issuance\Command\UpdateIssuanceQuantityHandler;
+use App\Module\Issuance\Command\UpdateIssuanceRoomHandler;
+use App\Module\Issuance\Query\GetAllIssuancesHandler;
+use App\Module\Issuance\Query\GetIssuanceByIdHandler;
 use App\Module\Room\Command\CreateRoomHandler;
 use App\Module\Room\Command\DeleteRoomHandler;
 use App\Module\Room\Command\UpdateRoomHandler;
@@ -123,6 +141,13 @@ class CQRSServiceProvider extends ServiceProvider
             RemoveOccupantsFromRoomCommand::class => RemoveOccupantsFromRoomHandler::class,
             CreateIssuanceCommand::class => CreateIssuanceHandler::class,
             CreateIssuanceCommentCommand::class => CreateIssuanceCommentHandler::class,
+            UpdateIssuanceAssetCommand::class => UpdateIssuanceAssetHandler::class,
+            UpdateIssuanceRoomCommand::class => UpdateIssuanceRoomHandler::class,
+            UpdateIssuanceIssuableCommand::class => UpdateIssuanceIssuableHandler::class,
+            UpdateIssuanceDeviceCommand::class => UpdateIssuanceDeviceHandler::class,
+            UpdateIssuanceQuantityCommand::class => UpdateIssuanceQuantityHandler::class,
+            UpdateIssuanceIssuedAtCommand::class => UpdateIssuanceIssuedAtHandler::class,
+            UpdateIssuanceCommentCommand::class => UpdateIssuanceCommentHandler::class,
         ]);
     }
 
@@ -139,6 +164,8 @@ class CQRSServiceProvider extends ServiceProvider
             GetEmployeeByIdQuery::class => GetEmployeeByIdHandler::class,
             GetAllRoomQuery::class => GetAllRoomHandler::class,
             GetRoomByIdQuery::class => GetRoomByIdHandler::class,
+            GetAllIssuancesQuery::class => GetAllIssuancesHandler::class,
+            GetIssuanceByIdQuery::class => GetIssuanceByIdHandler::class,
         ]);
     }
 }
