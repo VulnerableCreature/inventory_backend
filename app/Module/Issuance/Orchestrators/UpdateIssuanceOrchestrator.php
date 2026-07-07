@@ -29,11 +29,12 @@ use App\Module\Issuance\DTO\UpdateIssuanceDto;
 use App\Module\Issuance\Exceptions\IssuanceTargetTypeImmutableException;
 use App\Module\Issuance\Exceptions\RoomNotAssignedToIssuableException;
 use App\Module\Issuance\Traits\ResolvableIssuableTrait;
+use App\Shared\BaseOrchestrator;
 use Illuminate\Container\Attributes\Give;
 use Illuminate\Support\Facades\DB;
 use Throwable;
 
-final readonly class UpdateIssuanceOrchestrator
+final readonly class UpdateIssuanceOrchestrator extends BaseOrchestrator
 {
     use ResolvableIssuableTrait;
 
@@ -42,6 +43,7 @@ final readonly class UpdateIssuanceOrchestrator
         #[Give(QueryBus::class)] private QueryBusInterface     $queryBus,
     )
     {
+        parent::__construct();
     }
 
     /**

@@ -4,10 +4,12 @@ declare(strict_types=1);
 
 namespace App\Module\Issuance\DTO;
 
+use App\Shared\Attributes\DTO;
 use Carbon\Carbon;
 use DateTimeImmutable;
 use Illuminate\Support\Arr;
 
+#[DTO]
 final class UpdateIssuanceDto
 {
     public function __construct(

@@ -21,10 +21,11 @@ use App\Module\Asset\Enums\OperationEnum;
 use App\Module\Asset\Exceptions\InsufficientAssetStockException;
 use App\Module\Issuance\DTO\CreateIssuanceDto;
 use App\Module\Issuance\Traits\ResolvableIssuableTrait;
+use App\Shared\BaseOrchestrator;
 use Illuminate\Container\Attributes\Give;
 use Throwable;
 
-final readonly class CreateIssuanceOrchestrator
+final readonly class CreateIssuanceOrchestrator extends BaseOrchestrator
 {
     use ResolvableIssuableTrait;
 
@@ -33,6 +34,7 @@ final readonly class CreateIssuanceOrchestrator
         #[Give(QueryBus::class)] private QueryBusInterface     $queryBus,
     )
     {
+        parent::__construct();
     }
 
     /**
